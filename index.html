@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Распределение дежурств</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Подключение CSS -->
+</head>
+<body>
+    <h1>Распределение дежурств</h1>
+
+    <!-- Форма для загрузки всех пяти Excel-файлов -->
+    <input type="file" id="uploadExcel1" accept=".xlsx" />
+    <input type="file" id="uploadExcel2" accept=".xlsx" />
+    <input type="file" id="uploadExcel3" accept=".xlsx" />
+    <input type="file" id="uploadExcel4" accept=".xlsx" />
+    <input type="file" id="uploadExcel5" accept=".xlsx" />
+    
+    <button onclick="assignDuties()">Распределить дежурства</button>
+
+    <h2>Результаты распределения:</h2>
+    <table id="dutyTable">
+        <thead>
+            <tr>
+                <th>День</th>
+                <th>Дежурный по части</th>
+                <th>Помощник дежурного по части</th>
+                <th>Наряд в столовую</th>
+                <th>Наряд по КПП</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="script.js"></script> <!-- Подключение JS -->
+</body>
+</html>
