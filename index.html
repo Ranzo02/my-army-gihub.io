@@ -4,35 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Распределение дежурств</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Подключение CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Распределение дежурств</h1>
 
-    <!-- Форма для загрузки всех пяти Excel-файлов -->
-    <input type="file" id="uploadExcel1" accept=".xlsx" />
-    <input type="file" id="uploadExcel2" accept=".xlsx" />
-    <input type="file" id="uploadExcel3" accept=".xlsx" />
-    <input type="file" id="uploadExcel4" accept=".xlsx" />
-    <input type="file" id="uploadExcel5" accept=".xlsx" />
-    
-    <button onclick="assignDuties()">Распределить дежурства</button>
+<h1>Распределение дежурств</h1>
 
-    <h2>Результаты распределения:</h2>
-    <table id="dutyTable">
-        <thead>
-            <tr>
-                <th>День</th>
-                <th>Дежурный по части</th>
-                <th>Помощник дежурного по части</th>
-                <th>Наряд в столовую</th>
-                <th>Наряд по КПП</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+<table id="dutyTable">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Воинское звание</th>
+            <th>Имя и фамилия</th>
+            <th>Должность по части</th>
+            <th>Статус</th>
+            <th>Дни дежурства</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-    <script src="script.js"></script> <!-- Подключение JS -->
+<script>
+    // Исходные данные о дежурных
+    const dutyRoster = [
+        { id: 1, rank: 'Капитан', name: 'Иванов И. И.', position: 'Командир роты', status: 'Доступен', dutyDays: ['1 сентября'] },
+        { id: 2, rank: 'Лейтенант', name: 'Петров П. П.', position: 'Командир взвода', status: 'Доступен', dutyDays: ['2 сентября'] },
+        { id: 3, rank: 'Старший сержант', name: 'Сидоров С. С.', position: 'Заместитель командира', status: 'В отпуске', dutyDays: ['3 сентября'] },
+        { id: 4, rank: 'Сержант', name: 'Смирнов С. И.', position: 'Офицер', status: 'Доступен', dutyDays: ['4 сентября'] },
+        { id: 5, rank: 'Рядовой', name: 'Кузнецов В. А.', position: 'Солдат', status: 'Командировка', dutyDays: ['5 сентября'] },
+        { id: 6, rank: 'Старшина', name: 'Попов И. К.', position: 'Начальник службы', status: 'Доступен', dutyDays: ['6 сентября'] },
+        { id: 7, rank: 'Лейтенант', name: 'Новиков А. Н.', position: 'Командир роты', status: 'Доступен', dutyDays: ['7 сентября'] },
+        { id: 8, rank: 'Майор', name: 'Михайлов П. Е.', position: 'Зам. начальника штаба', status: 'Командировка', dutyDays: ['8 сентября'] },
+        { id: 9, rank: 'Подполковник', name: 'Егоров К. П.', position: 'Командир части', status: 'В отпуске', dutyDays: ['9 сентября'] },
+        { id: 10, rank: 'Полковник', name: 'Фёдоров Д. В.', position: 'Начальник штаба', status: 'Доступен', dutyDays: ['10 сентября'] }
+    ];
+
+    // Функция распределения дежурств на следующую неделю
+    function assignDuties() {
+        let available = dutyRoster.filter(person => person.status === 'Доступен');
+        let returning = dutyRoster.filter(person => person.status !== 'Доступен');
+        
+        // Возвращаем людей, которые были в отпуске или командировке
+        returning.forEach(person => {
+            person.status = 'Доступен';
+            available.push(person);
+        });
+
+        let newSchedule = [];
+        const nextWeek = ['11 сентября', '12 сентября', '13 сентября', '14 сентября', '15 сентября', '16 сентября', '17 сентября'];
+
+        // Циклическое распределение дежурств
+        nextWeek.forEach((day, i) => {
+            let person = available[i % available.length];
+            person.dutyDays.push(day);
+            newSchedule.push({ day: day, person: person.name });
+        });
+
+        return newSchedule;
+    }
+
+    // Отображение таблицы с дежурными
+    function displayRoster() {
+        const tbody = document.querySelector('#dutyTable tbody');
+        tbody.innerHTML = '';
+
+        dutyRoster.forEach(person => {
+            let row = `<tr>
+                        <td>${person.id}</td>
+                        <td>${person.rank}</td>
+                        <td>${person.name}</td>
+                        <td>${person.position}</td>
+                        <td>${person.status}</td>
+                        <td>${person.dutyDays.join(', ')}</td>
+                    </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    // Инициализация
+    function init() {
+        assignDuties();  // Распределить дежурства на следующую неделю
+        displayRoster(); // Отобразить таблицу
+    }
+
+    init();  // Запуск программы
+</script>
+
 </body>
 </html>
