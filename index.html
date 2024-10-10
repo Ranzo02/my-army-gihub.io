@@ -3,19 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Дежурные</title>
+    <title>Today's Duty Roster</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Распределение дежурных</h1>
-    <form id="uploadForm">
-        <label for="dutyFile">Загрузите файл с дежурными:</label>
-        <input type="file" id="dutyFile" accept=".xlsx">
-        <button type="button" onclick="processFile()">Распределить дежурных</button>
-    </form>
-    
+    <h1>Today's Duty Roster</h1>
+    <input type="file" id="file1" accept=".xlsx" />
+    <input type="file" id="file2" accept=".xlsx" />
+    <input type="file" id="file3" accept=".xlsx" />
+    <input type="file" id="file4" accept=".xlsx" />
+    <button onclick="loadFiles()">Load Duty Files</button>
+
+    <h2>Today's Duty Assignments</h2>
     <div id="output"></div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
