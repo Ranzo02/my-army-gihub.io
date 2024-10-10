@@ -1,37 +1,35 @@
-// script.js
-function processFile() {
-    const fileInput = document.getElementById('dutyFile');
-    const file = fileInput.files[0];
-
-    if (!file) {
-        alert('Выберите файл');
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-
-        // Выбираем первый лист из файла
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(firstSheet);
-
-        // Вызываем функцию распределения дежурных
-        assignDuty(jsonData);
-    };
-
-    reader.readAsArrayBuffer(file);
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
 }
 
-function assignDuty(data) {
-    const today = new Date().toLocaleDateString("ru-RU", { day: 'numeric', month: 'long' });
-    const availableDuties = data.filter(person => person["Статус"] === "Доступен");
+h1, h2 {
+    color: #333;
+}
 
-    let output = `<h2>Дежурные на ${today}</h2>`;
-    availableDuties.forEach((person, index) => {
-        output += `<p>${index + 1}. ${person["Военное звание"]} ${person["Имя и фамилия"]} — ${person["Должность"]}</p>`;
-    });
+button {
+    margin: 10px 0;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
 
-    document.getElementById('output').innerHTML = output;
+#output {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
 }
