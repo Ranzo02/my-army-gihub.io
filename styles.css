@@ -1,24 +1,37 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
+// script.js
+function processFile() {
+    const fileInput = document.getElementById('dutyFile');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert('Выберите файл');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+
+        // Выбираем первый лист из файла
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+        // Вызываем функцию распределения дежурных
+        assignDuty(jsonData);
+    };
+
+    reader.readAsArrayBuffer(file);
 }
 
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    background: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+function assignDuty(data) {
+    const today = new Date().toLocaleDateString("ru-RU", { day: 'numeric', month: 'long' });
+    const availableDuties = data.filter(person => person["Статус"] === "Доступен");
 
-h1 {
-    text-align: center;
-}
+    let output = `<h2>Дежурные на ${today}</h2>`;
+    availableDuties.forEach((person, index) => {
+        output += `<p>${index + 1}. ${person["Военное звание"]} ${person["Имя и фамилия"]} — ${person["Должность"]}</p>`;
+    });
 
-input {
-    display: block;
-    margin: 10px 0;
+    document.getElementById('output').innerHTML = output;
 }
